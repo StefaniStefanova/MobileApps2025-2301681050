@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "273198935640",
+    "project_id": "pinmemory-ac825",
+    "storage_bucket": "pinmemory-ac825.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273198935640:android:06e32bc03d27faba3be42d",
+        "android_client_info": {
+          "package_name": "com.example.pinmemory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9oZrMvBX9p4SKup29wExjuCRrgAYLKy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
