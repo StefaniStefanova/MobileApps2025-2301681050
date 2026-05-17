@@ -14,12 +14,11 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
-    private lateinit var auth: FirebaseAuth
+    private var selectedLatLng: LatLng? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,23 +31,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        auth = FirebaseAuth.getInstance()
-
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         view.findViewById<FloatingActionButton>(R.id.fabAddMemory).setOnClickListener {
-            findNavController().navigate(R.id.action_map_to_add)
+            val bundle = Bundle().apply {
+                putDouble("latitude", selectedLatLng?.latitude ?: 0.0)
+                putDouble("longitude", selectedLatLng?.longitude ?: 0.0)
+            }
+            findNavController().navigate(R.id.action_map_to_add, bundle)
         }
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        // Default camera position
         val defaultLocation = LatLng(42.6977, 23.3219) // Sofia
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 7f))
+
+        googleMap.setOnMapClickListener { latLng ->
+            googleMap.clear()
+            selectedLatLng = latLng
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("New Memory")
+            )
+        }
 
         googleMap.setOnMarkerClickListener { marker ->
             val memoryId = marker.tag as? String

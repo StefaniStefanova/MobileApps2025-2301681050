@@ -87,20 +87,41 @@ class AddEditFragment : Fragment() {
         val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         tvDate.text = "📅 ${dateFormat.format(Date())}"
 
-        // Get location
-        CoroutineScope(Dispatchers.Main).launch {
-            val location = withContext(Dispatchers.IO) {
-                locationHelper.getLastLocation()
-            }
-            if (location != null) {
-                latitude = location.first
-                longitude = location.second
+// Get location from map selection or GPS
+        // Get location from map selection or GPS
+        val argLat = arguments?.getDouble("latitude", 0.0) ?: 0.0
+        val argLng = arguments?.getDouble("longitude", 0.0) ?: 0.0
+
+        if (argLat != 0.0 && argLng != 0.0) {
+            latitude = argLat
+            longitude = argLng
+            CoroutineScope(Dispatchers.Main).launch {
                 locationName = withContext(Dispatchers.IO) {
                     locationHelper.getLocationName(latitude, longitude)
                 }
+                if (locationName == "Unknown location") {
+                    locationName = "%.4f, %.4f".format(latitude, longitude)
+                }
                 tvLocation.text = "📍 $locationName"
-            } else {
-                tvLocation.text = "📍 Location unavailable"
+            }
+        } else {
+            CoroutineScope(Dispatchers.Main).launch {
+                val location = withContext(Dispatchers.IO) {
+                    locationHelper.getLastLocation()
+                }
+                if (location != null) {
+                    latitude = location.first
+                    longitude = location.second
+                    locationName = withContext(Dispatchers.IO) {
+                        locationHelper.getLocationName(latitude, longitude)
+                    }
+                    if (locationName == "Unknown location") {
+                        locationName = "%.4f, %.4f".format(latitude, longitude)
+                    }
+                    tvLocation.text = "📍 $locationName"
+                } else {
+                    tvLocation.text = "📍 Location unavailable"
+                }
             }
         }
 
