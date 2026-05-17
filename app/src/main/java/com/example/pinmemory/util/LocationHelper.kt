@@ -1,13 +1,12 @@
 package com.example.pinmemory.util
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Geocoder
-import android.os.Build
+import android.annotation.SuppressLint
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.Locale
+import java.net.URL
 import kotlin.coroutines.resume
+import org.json.JSONObject
 
 class LocationHelper(private val context: Context) {
 
@@ -32,24 +31,32 @@ class LocationHelper(private val context: Context) {
 
     fun getLocationName(latitude: Double, longitude: Double): String {
         return try {
-            val geocoder = Geocoder(context, Locale.getDefault())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                var result = "Unknown location"
-                geocoder.getFromLocation(latitude, longitude, 1) { addresses ->
-                    result = addresses.firstOrNull()?.locality
-                        ?: addresses.firstOrNull()?.countryName
-                                ?: "Unknown location"
-                }
-                result
-            } else {
-                @Suppress("DEPRECATION")
-                val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                addresses?.firstOrNull()?.locality
-                    ?: addresses?.firstOrNull()?.countryName
-                    ?: "Unknown location"
+            val url = "https://nominatim.openstreetmap.org/reverse?lat=$latitude&lon=$longitude&format=json"
+            val response = URL(url).openConnection().apply {
+                setRequestProperty("User-Agent", "PinMemory/1.0")
+                connectTimeout = 5000
+                readTimeout = 5000
+            }.getInputStream().bufferedReader().readText()
+
+            val json = JSONObject(response)
+            val address = json.optJSONObject("address")
+
+            val name = json.optString("name", "")
+            val road = address?.optString("road", "")
+            val city = address?.optString("city", "")
+                ?: address?.optString("town", "")
+                ?: address?.optString("village", "")
+                ?: address?.optString("municipality", "")
+
+            when {
+                name.isNotEmpty() -> name
+                !road.isNullOrEmpty() && !city.isNullOrEmpty() -> "$road, $city"
+                !road.isNullOrEmpty() -> road
+                !city.isNullOrEmpty() -> city
+                else -> "%.4f, %.4f".format(latitude, longitude)
             }
         } catch (e: Exception) {
-            "Unknown location"
+            "%.4f, %.4f".format(latitude, longitude)
         }
     }
 }

@@ -45,6 +45,7 @@ class AddEditFragment : Fragment() {
     private var longitude: Double = 0.0
     private var locationName: String = ""
     private var editMemoryId: String? = null
+    private var selectedDate: Long = System.currentTimeMillis()
 
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -83,9 +84,24 @@ class AddEditFragment : Fragment() {
         val btnPickImage = view.findViewById<MaterialButton>(R.id.btnPickImage)
         val btnSave = view.findViewById<MaterialButton>(R.id.btnSave)
 
-        // Set date
+        // Set date with picker
         val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        tvDate.text = "📅 ${dateFormat.format(Date())}"
+        tvDate.text = "📅 ${dateFormat.format(Date(selectedDate))}"
+
+        tvDate.setOnClickListener {
+            val calendar = java.util.Calendar.getInstance()
+            android.app.DatePickerDialog(
+                requireContext(),
+                { _, year, month, day ->
+                    calendar.set(year, month, day)
+                    selectedDate = calendar.timeInMillis
+                    tvDate.text = "📅 ${dateFormat.format(Date(selectedDate))}"
+                },
+                calendar.get(java.util.Calendar.YEAR),
+                calendar.get(java.util.Calendar.MONTH),
+                calendar.get(java.util.Calendar.DAY_OF_MONTH)
+            ).show()
+        }
 
 // Get location from map selection or GPS
         // Get location from map selection or GPS
@@ -176,7 +192,7 @@ class AddEditFragment : Fragment() {
             longitude = longitude,
             locationName = locationName,
             imageUrl = imageUrl,
-            date = System.currentTimeMillis(),
+            date = selectedDate,
             userId = userId
         )
 
