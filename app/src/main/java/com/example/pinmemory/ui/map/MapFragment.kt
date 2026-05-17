@@ -47,8 +47,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        val defaultLocation = LatLng(42.6977, 23.3219) // Sofia
+        val defaultLocation = LatLng(42.6977, 23.3219)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 7f))
+
+        loadMemoriesOnMap()
 
         googleMap.setOnMapClickListener { latLng ->
             googleMap.clear()
@@ -67,6 +69,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 findNavController().navigate(R.id.action_map_to_detail, bundle)
             }
             true
+        }
+    }
+
+    private fun loadMemoriesOnMap() {
+        val userId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val dao = com.example.pinmemory.data.local.MemoryDatabase.getDatabase(requireContext())
+            .memoryDao()
+
+        dao.getMemoriesByUser(userId).observe(viewLifecycleOwner) { memories ->
+            googleMap.clear()
+            memories.forEach { memory ->
+                val position = LatLng(memory.latitude, memory.longitude)
+                val marker = googleMap.addMarker(
+                    MarkerOptions()
+                        .position(position)
+                        .title(memory.title)
+                )
+                marker?.tag = memory.id
+            }
         }
     }
 }

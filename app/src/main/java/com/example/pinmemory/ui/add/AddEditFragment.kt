@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.pinmemory.R
 import com.example.pinmemory.data.local.MemoryDatabase
-import com.example.pinmemory.data.local.MemoryEntity
 import com.example.pinmemory.data.remote.FirestoreDataSource
 import com.example.pinmemory.data.repository.MemoryRepository
 import com.example.pinmemory.model.Memory
@@ -89,7 +88,7 @@ class AddEditFragment : Fragment() {
         tvDate.text = "📅 ${dateFormat.format(Date(selectedDate))}"
 
         tvDate.setOnClickListener {
-            val calendar = java.util.Calendar.getInstance()
+            val calendar = Calendar.getInstance()
             android.app.DatePickerDialog(
                 requireContext(),
                 { _, year, month, day ->
@@ -97,13 +96,12 @@ class AddEditFragment : Fragment() {
                     selectedDate = calendar.timeInMillis
                     tvDate.text = "📅 ${dateFormat.format(Date(selectedDate))}"
                 },
-                calendar.get(java.util.Calendar.YEAR),
-                calendar.get(java.util.Calendar.MONTH),
-                calendar.get(java.util.Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
 
-// Get location from map selection or GPS
         // Get location from map selection or GPS
         val argLat = arguments?.getDouble("latitude", 0.0) ?: 0.0
         val argLng = arguments?.getDouble("longitude", 0.0) ?: 0.0
@@ -148,13 +146,20 @@ class AddEditFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val title = etTitle.text.toString().trim()
+            Toast.makeText(requireContext(), "Title: $title, User: ${auth.currentUser?.uid}", Toast.LENGTH_LONG).show()
+
             if (title.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter a title", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val userId = auth.currentUser?.uid ?: return@setOnClickListener
+            val userId = auth.currentUser?.uid ?: run {
+                Toast.makeText(requireContext(), "Not logged in!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val memoryId = editMemoryId ?: UUID.randomUUID().toString()
+            Toast.makeText(requireContext(), "Saving...", Toast.LENGTH_SHORT).show()
 
             if (selectedImageUri != null) {
                 uploadImageAndSave(memoryId, title, etNote.text.toString().trim(), userId)
@@ -197,10 +202,16 @@ class AddEditFragment : Fragment() {
         )
 
         CoroutineScope(Dispatchers.IO).launch {
-            repository.addMemory(memory, memory.toEntity())
-            withContext(Dispatchers.Main) {
-                Toast.makeText(requireContext(), "Memory saved!", Toast.LENGTH_SHORT).show()
-                findNavController().popBackStack()
+            try {
+                repository.addMemory(memory, memory.toEntity())
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Memory saved!", Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
