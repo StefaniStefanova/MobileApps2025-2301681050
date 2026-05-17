@@ -45,6 +45,12 @@ class AddEditFragment : Fragment() {
     private var locationName: String = ""
     private var editMemoryId: String? = null
     private var selectedDate: Long = System.currentTimeMillis()
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    private var etTitle: TextInputEditText? = null
+    private var etNote: TextInputEditText? = null
+    private var tvLocation: TextView? = null
+    private var tvDate: TextView? = null
 
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -76,25 +82,23 @@ class AddEditFragment : Fragment() {
 
         editMemoryId = arguments?.getString("memoryId")
 
-        val etTitle = view.findViewById<TextInputEditText>(R.id.etTitle)
-        val etNote = view.findViewById<TextInputEditText>(R.id.etNote)
-        val tvLocation = view.findViewById<TextView>(R.id.tvLocation)
-        val tvDate = view.findViewById<TextView>(R.id.tvDate)
+        etTitle = view.findViewById(R.id.etTitle)
+        etNote = view.findViewById(R.id.etNote)
+        tvLocation = view.findViewById(R.id.tvLocation)
+        tvDate = view.findViewById(R.id.tvDate)
         val btnPickImage = view.findViewById<MaterialButton>(R.id.btnPickImage)
         val btnSave = view.findViewById<MaterialButton>(R.id.btnSave)
 
-        // Set date with picker
-        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        tvDate.text = "📅 ${dateFormat.format(Date(selectedDate))}"
+        tvDate!!.text = "📅 ${dateFormat.format(Date(selectedDate))}"
 
-        tvDate.setOnClickListener {
+        tvDate!!.setOnClickListener {
             val calendar = Calendar.getInstance()
             android.app.DatePickerDialog(
                 requireContext(),
                 { _, year, month, day ->
                     calendar.set(year, month, day)
                     selectedDate = calendar.timeInMillis
-                    tvDate.text = "📅 ${dateFormat.format(Date(selectedDate))}"
+                    tvDate!!.text = "📅 ${dateFormat.format(Date(selectedDate))}"
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -102,39 +106,61 @@ class AddEditFragment : Fragment() {
             ).show()
         }
 
-        // Get location from map selection or GPS
-        val argLat = arguments?.getDouble("latitude", 0.0) ?: 0.0
-        val argLng = arguments?.getDouble("longitude", 0.0) ?: 0.0
-
-        if (argLat != 0.0 && argLng != 0.0) {
-            latitude = argLat
-            longitude = argLng
-            CoroutineScope(Dispatchers.Main).launch {
-                locationName = withContext(Dispatchers.IO) {
-                    locationHelper.getLocationName(latitude, longitude)
+        if (editMemoryId != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val entity = repository.getMemoryById(editMemoryId!!)
+                withContext(Dispatchers.Main) {
+                    if (entity != null) {
+                        etTitle!!.setText(entity.title)
+                        etNote!!.setText(entity.note)
+                        latitude = entity.latitude
+                        longitude = entity.longitude
+                        locationName = entity.locationName
+                        selectedDate = entity.date
+                        tvLocation!!.text = "📍 ${entity.locationName}"
+                        tvDate!!.text = "📅 ${dateFormat.format(Date(entity.date))}"
+                        if (entity.imageUrl.isNotEmpty()) {
+                            Glide.with(this@AddEditFragment)
+                                .load(entity.imageUrl)
+                                .into(view.findViewById(R.id.ivMemoryImage))
+                        }
+                    }
                 }
-                if (locationName == "Unknown location") {
-                    locationName = "%.4f, %.4f".format(latitude, longitude)
-                }
-                tvLocation.text = "📍 $locationName"
             }
         } else {
-            CoroutineScope(Dispatchers.Main).launch {
-                val location = withContext(Dispatchers.IO) {
-                    locationHelper.getLastLocation()
-                }
-                if (location != null) {
-                    latitude = location.first
-                    longitude = location.second
+            val argLat = arguments?.getDouble("latitude", 0.0) ?: 0.0
+            val argLng = arguments?.getDouble("longitude", 0.0) ?: 0.0
+
+            if (argLat != 0.0 && argLng != 0.0) {
+                latitude = argLat
+                longitude = argLng
+                CoroutineScope(Dispatchers.Main).launch {
                     locationName = withContext(Dispatchers.IO) {
                         locationHelper.getLocationName(latitude, longitude)
                     }
                     if (locationName == "Unknown location") {
                         locationName = "%.4f, %.4f".format(latitude, longitude)
                     }
-                    tvLocation.text = "📍 $locationName"
-                } else {
-                    tvLocation.text = "📍 Location unavailable"
+                    tvLocation!!.text = "📍 $locationName"
+                }
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val location = withContext(Dispatchers.IO) {
+                        locationHelper.getLastLocation()
+                    }
+                    if (location != null) {
+                        latitude = location.first
+                        longitude = location.second
+                        locationName = withContext(Dispatchers.IO) {
+                            locationHelper.getLocationName(latitude, longitude)
+                        }
+                        if (locationName == "Unknown location") {
+                            locationName = "%.4f, %.4f".format(latitude, longitude)
+                        }
+                        tvLocation!!.text = "📍 $locationName"
+                    } else {
+                        tvLocation!!.text = "📍 Location unavailable"
+                    }
                 }
             }
         }
@@ -145,9 +171,7 @@ class AddEditFragment : Fragment() {
         }
 
         btnSave.setOnClickListener {
-            val title = etTitle.text.toString().trim()
-            Toast.makeText(requireContext(), "Title: $title, User: ${auth.currentUser?.uid}", Toast.LENGTH_LONG).show()
-
+            val title = etTitle!!.text.toString().trim()
             if (title.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter a title", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -159,12 +183,11 @@ class AddEditFragment : Fragment() {
             }
 
             val memoryId = editMemoryId ?: UUID.randomUUID().toString()
-            Toast.makeText(requireContext(), "Saving...", Toast.LENGTH_SHORT).show()
 
             if (selectedImageUri != null) {
-                uploadImageAndSave(memoryId, title, etNote.text.toString().trim(), userId)
+                uploadImageAndSave(memoryId, title, etNote!!.text.toString().trim(), userId)
             } else {
-                saveMemory(memoryId, title, etNote.text.toString().trim(), userId, "")
+                saveMemory(memoryId, title, etNote!!.text.toString().trim(), userId, "")
             }
         }
     }

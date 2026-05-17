@@ -70,7 +70,7 @@ class DetailFragment : Fragment() {
 
                     btnEdit.setOnClickListener {
                         val bundle = Bundle().apply { putString("memoryId", memoryId) }
-                        findNavController().navigate(R.id.action_map_to_add, bundle)
+                        findNavController().navigate(R.id.addEditFragment, bundle)
                     }
 
                     btnDelete.setOnClickListener {
