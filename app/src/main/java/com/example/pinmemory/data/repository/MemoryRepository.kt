@@ -15,6 +15,7 @@ class MemoryRepository(
         return memoryDao.getMemoriesByUser(userId)
     }
 
+    suspend fun getMemoryById(id: String) = memoryDao.getMemoryById(id)
     suspend fun addMemory(memory: Memory, entity: MemoryEntity) {
         memoryDao.insertMemory(entity)
         firestoreDataSource.addMemory(memory)
