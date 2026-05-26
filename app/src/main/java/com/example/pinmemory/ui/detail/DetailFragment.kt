@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.Button
 
 class DetailFragment : Fragment() {
 
@@ -50,6 +51,10 @@ class DetailFragment : Fragment() {
         val tvNote = view.findViewById<TextView>(R.id.tvNote)
         val btnEdit = view.findViewById<MaterialButton>(R.id.btnEdit)
         val btnDelete = view.findViewById<MaterialButton>(R.id.btnDelete)
+
+        view.findViewById<Button>(R.id.btnBack).setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             val entity = repository.getMemoryById(memoryId)

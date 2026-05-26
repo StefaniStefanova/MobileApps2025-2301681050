@@ -3,10 +3,12 @@ package com.example.pinmemory.ui.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.pinmemory.R
 import com.example.pinmemory.data.local.MemoryEntity
 import java.text.SimpleDateFormat
@@ -32,6 +34,17 @@ class MemoryAdapter(
             itemView.findViewById<TextView>(R.id.tvItemTitle).text = memory.title
             itemView.findViewById<TextView>(R.id.tvItemLocation).text = "📍 ${memory.locationName}"
             itemView.findViewById<TextView>(R.id.tvItemDate).text = dateFormat.format(Date(memory.date))
+
+            val ivThumbnail = itemView.findViewById<ImageView>(R.id.ivThumbnail)
+            if (memory.imageUrl.isNotEmpty()) {
+                Glide.with(itemView.context)
+                    .load(memory.imageUrl)
+                    .centerCrop()
+                    .into(ivThumbnail)
+            } else {
+                ivThumbnail.setImageResource(R.drawable.ic_map)
+            }
+
             itemView.setOnClickListener { onItemClick(memory.id) }
         }
     }

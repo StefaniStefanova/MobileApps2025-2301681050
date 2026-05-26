@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -49,6 +51,19 @@ class ListFragment : Fragment() {
 
         viewModel.getMemories(userId).observe(viewLifecycleOwner) { memories ->
             adapter.submitList(memories)
+        }
+
+        view.findViewById<ImageButton>(R.id.btnLogout).setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            findNavController().navigate(R.id.loginFragment)
+        }
+
+        view.findViewById<LinearLayout>(R.id.navMap).setOnClickListener {
+            findNavController().navigate(R.id.mapFragment)
+        }
+
+        view.findViewById<LinearLayout>(R.id.navMemories).setOnClickListener {
+            // вече сме на Memories
         }
     }
 }
