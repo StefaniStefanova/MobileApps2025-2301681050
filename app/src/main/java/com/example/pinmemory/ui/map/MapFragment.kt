@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pinmemory.R
 import com.example.pinmemory.data.local.MemoryDatabase
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import android.widget.Button
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -40,25 +42,47 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val dao = MemoryDatabase.getDatabase(requireContext()).memoryDao()
         val repository = MemoryRepository(dao, FirestoreDataSource())
         val factory = MapViewModelFactory(repository)
-        viewModel = MapViewModelFactory(repository).let {
-            androidx.lifecycle.ViewModelProvider(this, it)[MapViewModel::class.java]
-        }
+        viewModel = androidx.lifecycle.ViewModelProvider(this, factory)[MapViewModel::class.java]
 
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        view.findViewById<FloatingActionButton>(R.id.fabAddMemory).setOnClickListener {
+
+        view.findViewById<Button>(R.id.fabAddMemory).setOnClickListener  {
             val bundle = Bundle().apply {
                 putDouble("latitude", selectedLatLng?.latitude ?: 0.0)
                 putDouble("longitude", selectedLatLng?.longitude ?: 0.0)
             }
             findNavController().navigate(R.id.action_map_to_add, bundle)
         }
+
+        view.findViewById<ImageButton>(R.id.btnLogout).setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            findNavController().navigate(R.id.loginFragment)
+        }
+
+        view.findViewById<LinearLayout>(R.id.navMap).setOnClickListener {
+            // вече сме на Map
+        }
+
+        view.findViewById<LinearLayout>(R.id.navMemories).setOnClickListener {
+            findNavController().navigate(R.id.listFragment)
+        }
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+
+        try {
+            googleMap.setMapStyle(
+                com.google.android.gms.maps.model.MapStyleOptions.loadRawResourceStyle(
+                    requireContext(), R.raw.map_style_dark
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         val defaultLocation = LatLng(42.6977, 23.3219)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 7f))
@@ -73,6 +97,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(position)
                         .title(memory.title)
+                        .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory
+                            .defaultMarker(280f))
                 )
                 marker?.tag = memory.id
             }
@@ -85,6 +111,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 MarkerOptions()
                     .position(latLng)
                     .title("New Memory")
+                    .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory
+                        .defaultMarker(280f))
             )
         }
 

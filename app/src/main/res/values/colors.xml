@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Dark theme colors -->
+    <color name="dark_bg">#12121A</color>
+    <color name="dark_surface">#1E1E2E</color>
+    <color name="dark_card">#252535</color>
+
+    <!-- Accent colors -->
+    <color name="purple_primary">#9B59F5</color>
+    <color name="purple_dark">#7B3FD4</color>
+    <color name="pink_accent">#E040FB</color>
+    <color name="gradient_start">#9B59F5</color>
+    <color name="gradient_end">#E040FB</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0C8</color>
+    <color name="text_hint">#6B6B8A</color>
+
+    <!-- Light theme colors -->
+    <color name="light_bg">#F5F5FF</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_card">#EFEFFF</color>
+
+    <!-- Common -->
+    <color name="error">#FF5252</color>
+    <color name="success">#4CAF50</color>
 </resources>
