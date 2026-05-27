@@ -25,7 +25,6 @@ import com.example.pinmemory.util.toEntity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,8 +87,11 @@ class AddEditFragment : Fragment() {
         tvDate = view.findViewById(R.id.tvDate)
         val btnPickImage = view.findViewById<MaterialButton>(R.id.btnPickImage)
         val btnSave = view.findViewById<MaterialButton>(R.id.btnSave)
+        val btnBack = view.findViewById<android.widget.Button>(R.id.btnBack)
 
-        tvDate!!.text = "📅 ${dateFormat.format(Date(selectedDate))}"
+        btnBack.setOnClickListener { findNavController().popBackStack() }
+
+        tvDate!!.text = " ${dateFormat.format(Date(selectedDate))}"
 
         tvDate!!.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -98,7 +100,7 @@ class AddEditFragment : Fragment() {
                 { _, year, month, day ->
                     calendar.set(year, month, day)
                     selectedDate = calendar.timeInMillis
-                    tvDate!!.text = "📅 ${dateFormat.format(Date(selectedDate))}"
+                    tvDate!!.text = " ${dateFormat.format(Date(selectedDate))}"
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -117,12 +119,13 @@ class AddEditFragment : Fragment() {
                         longitude = entity.longitude
                         locationName = entity.locationName
                         selectedDate = entity.date
-                        tvLocation!!.text = "📍 ${entity.locationName}"
-                        tvDate!!.text = "📅 ${dateFormat.format(Date(entity.date))}"
+                        tvLocation!!.text = " ${entity.locationName}"
+                        tvDate!!.text = " ${dateFormat.format(Date(entity.date))}"
                         if (entity.imageUrl.isNotEmpty()) {
                             Glide.with(this@AddEditFragment)
                                 .load(entity.imageUrl)
                                 .into(view.findViewById(R.id.ivMemoryImage))
+                            selectedImageUri = Uri.parse(entity.imageUrl)
                         }
                     }
                 }
@@ -141,7 +144,7 @@ class AddEditFragment : Fragment() {
                     if (locationName == "Unknown location") {
                         locationName = "%.4f, %.4f".format(latitude, longitude)
                     }
-                    tvLocation!!.text = "📍 $locationName"
+                    tvLocation!!.text = " $locationName"
                 }
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
@@ -157,9 +160,9 @@ class AddEditFragment : Fragment() {
                         if (locationName == "Unknown location") {
                             locationName = "%.4f, %.4f".format(latitude, longitude)
                         }
-                        tvLocation!!.text = "📍 $locationName"
+                        tvLocation!!.text = " $locationName"
                     } else {
-                        tvLocation!!.text = "📍 Location unavailable"
+                        tvLocation!!.text = " Location unavailable"
                     }
                 }
             }
@@ -183,11 +186,21 @@ class AddEditFragment : Fragment() {
             }
 
             val memoryId = editMemoryId ?: UUID.randomUUID().toString()
-            val imageUrl = selectedImageUri?.toString() ?: ""
-            saveMemory(memoryId, title, etNote!!.text.toString().trim(), userId, imageUrl)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val imageUrl = if (selectedImageUri != null) {
+                    selectedImageUri.toString()
+                } else if (editMemoryId != null) {
+                    repository.getMemoryById(editMemoryId!!)?.imageUrl ?: ""
+                } else {
+                    ""
+                }
+                withContext(Dispatchers.Main) {
+                    saveMemory(memoryId, title, etNote!!.text.toString().trim(), userId, imageUrl)
+                }
+            }
         }
     }
-
 
     private fun saveMemory(
         memoryId: String, title: String, note: String, userId: String, imageUrl: String
