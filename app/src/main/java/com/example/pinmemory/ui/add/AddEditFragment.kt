@@ -183,31 +183,11 @@ class AddEditFragment : Fragment() {
             }
 
             val memoryId = editMemoryId ?: UUID.randomUUID().toString()
-
-            if (selectedImageUri != null) {
-                uploadImageAndSave(memoryId, title, etNote!!.text.toString().trim(), userId)
-            } else {
-                saveMemory(memoryId, title, etNote!!.text.toString().trim(), userId, "")
-            }
+            val imageUrl = selectedImageUri?.toString() ?: ""
+            saveMemory(memoryId, title, etNote!!.text.toString().trim(), userId, imageUrl)
         }
     }
 
-    private fun uploadImageAndSave(
-        memoryId: String, title: String, note: String, userId: String
-    ) {
-        val storageRef = FirebaseStorage.getInstance().reference
-            .child("memories/$userId/$memoryId.jpg")
-
-        storageRef.putFile(selectedImageUri!!)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    saveMemory(memoryId, title, note, userId, uri.toString())
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
-            }
-    }
 
     private fun saveMemory(
         memoryId: String, title: String, note: String, userId: String, imageUrl: String

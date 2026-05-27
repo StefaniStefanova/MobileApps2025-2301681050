@@ -11,27 +11,42 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Image with back button overlay -->
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <!-- Image + Header overlay -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="260dp">
+            android:layout_height="280dp">
 
             <ImageView
                 android:id="@+id/ivMemoryImage"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:scaleType="centerCrop"
-                android:background="@color/dark_card"/>
+                android:layout_height="280dp"
+                android:scaleType="centerCrop"/>
 
-            <Button
-                android:id="@+id/btnBack"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="16dp"
-                android:background="@drawable/ic_back"
-                android:textSize="18sp"/>
+            <!-- Dark overlay -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:background="#66000000"/>
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="40dp">
+
+                <Button
+                    android:id="@+id/btnBack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_back"
+                    android:drawableTint="@color/purple_primary"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
 
         <!-- Content -->
         <LinearLayout
@@ -44,28 +59,60 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
+                android:textSize="26sp"
                 android:textColor="@color/text_primary"
                 android:fontFamily="@font/poppins_bold"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:id="@+id/tvDate"
+            <!-- Date row -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:fontFamily="@font/poppins_regular"
-                android:textSize="13sp"
-                android:layout_marginBottom="4dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/tvLocation"
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/purple_dark"/>
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="15sp"/>
+
+            </LinearLayout>
+
+            <!-- Location row -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/purple_primary"
-                android:fontFamily="@font/poppins_regular"
-                android:textSize="13sp"
-                android:layout_marginBottom="16dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="20dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_location"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/purple_dark"/>
+
+                <TextView
+                    android:id="@+id/tvLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="15sp"/>
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -105,9 +152,9 @@
                     android:layout_weight="1"
                     android:text="Delete"
                     android:fontFamily="@font/poppins_semibold"
-                    android:textColor="@color/error"
+                    android:textColor="@color/purple_primary"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:strokeColor="@color/error"/>
+                    app:strokeColor="@color/purple_primary"/>
 
             </LinearLayout>
         </LinearLayout>

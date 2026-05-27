@@ -62,10 +62,10 @@ class DetailFragment : Fragment() {
                 if (entity != null) {
                     tvTitle.text = entity.title
                     tvNote.text = entity.note
-                    tvLocation.text = "📍 ${entity.locationName}"
+                    tvLocation.text = " ${entity.locationName}"
 
                     val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                    tvDate.text = "📅 ${dateFormat.format(Date(entity.date))}"
+                    tvDate.text = " ${dateFormat.format(Date(entity.date))}"
 
                     if (entity.imageUrl.isNotEmpty()) {
                         Glide.with(this@DetailFragment)
