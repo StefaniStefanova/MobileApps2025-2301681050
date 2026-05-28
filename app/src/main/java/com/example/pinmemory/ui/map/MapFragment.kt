@@ -62,6 +62,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             findNavController().navigate(R.id.loginFragment)
         }
 
+        // Theme toggle
+        val btnThemeToggle = view.findViewById<android.widget.ImageButton>(R.id.btnThemeToggle)
+        val sharedPrefs = requireContext().getSharedPreferences("settings", android.content.Context.MODE_PRIVATE)
+        val isDarkMode = sharedPrefs.getBoolean("dark_mode", true)
+
+// Показваме правилната иконка
+        if (isDarkMode) {
+            btnThemeToggle.setImageResource(R.drawable.ic_moon)
+        } else {
+            btnThemeToggle.setImageResource(R.drawable.ic_sun)
+        }
+
+        btnThemeToggle.setOnClickListener {
+            val newDarkMode = !sharedPrefs.getBoolean("dark_mode", true)
+            sharedPrefs.edit().putBoolean("dark_mode", newDarkMode).apply()
+
+            val intent = requireActivity().intent
+            requireActivity().finish()
+            startActivity(intent)
+        }
+
+
         view.findViewById<LinearLayout>(R.id.navMap).setOnClickListener {
             // вече сме на Map
         }
@@ -74,15 +96,30 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
+        val sharedPrefs = requireContext().getSharedPreferences("settings", android.content.Context.MODE_PRIVATE)
+        val isDark = sharedPrefs.getBoolean("dark_mode", true)
+
+        if (isDark) {
+            try {
+                googleMap.setMapStyle(
+                    com.google.android.gms.maps.model.MapStyleOptions.loadRawResourceStyle(
+                        requireContext(), R.raw.map_style_dark
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
         try {
             googleMap.setMapStyle(
                 com.google.android.gms.maps.model.MapStyleOptions.loadRawResourceStyle(
-                    requireContext(), R.raw.map_style_dark
+                    requireContext(), R.raw.map_style_light
                 )
             )
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
 
         val defaultLocation = LatLng(42.6977, 23.3219)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 7f))

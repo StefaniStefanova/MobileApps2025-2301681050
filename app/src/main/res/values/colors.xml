@@ -22,6 +22,18 @@
     <color name="light_surface">#FFFFFF</color>
     <color name="light_card">#EFEFFF</color>
 
+    <!-- Light/Dark adaptive colors -->
+    <color name="color_background">#F5F5FF</color>
+    <color name="color_surface">#FFFFFF</color>
+    <color name="color_card">#EFEFFF</color>
+    <color name="color_text_primary">#1a1a2e</color>
+    <color name="color_text_secondary">#4a4a6a</color>
+    <color name="color_text_hint">#8a8aaa</color>
+    <color name="color_thumbnail_placeholder">#E0E0F0</color>
+    <color name="color_top_bar">#FFFFFF</color>
+    <color name="color_bottom_nav">#FFFFFF</color>
+    <color name="color_divider">#E0E0F0</color>
+
     <!-- Common -->
     <color name="error">#FF5252</color>
     <color name="success">#4CAF50</color>

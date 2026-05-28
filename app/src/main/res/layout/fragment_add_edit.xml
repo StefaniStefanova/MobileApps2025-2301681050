@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_bg">
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                     android:id="@+id/etTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:fontFamily="@font/poppins_regular"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:minLines="3"
                     android:gravity="top"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:fontFamily="@font/poppins_regular"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/dark_card"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="12dp">
 
                 <LinearLayout
@@ -129,7 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Fetching location..."
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:fontFamily="@font/poppins_regular"
                         android:textSize="14sp"/>
 
@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="@color/dark_card"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="12dp">
 
                 <LinearLayout
@@ -164,7 +164,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Today"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:fontFamily="@font/poppins_regular"
                         android:textSize="14sp"/>
 

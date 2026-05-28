@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_bg">
+    android:background="?android:attr/colorBackground">
 
     <!-- TOP BAR -->
     <LinearLayout
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/allison_regular"
                 android:text="Pin"
-                android:textColor="@color/text_primary"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="40sp" />
 
             <TextView
@@ -49,7 +49,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_logout"
-            app:tint="@color/text_primary"
+            app:tint="?android:attr/textColorPrimary"
             app:backgroundTint="@android:color/transparent"/>
 
     </LinearLayout>
@@ -93,14 +93,14 @@
                 android:layout_height="20dp"
                 android:layout_marginEnd="6dp"
                 android:src="@drawable/ic_map"
-                app:tint="@color/text_secondary" />
+                app:tint="?android:attr/textColorSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Map"
-                android:textColor="@color/text_secondary"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textSize="14sp" />
         </LinearLayout>
 

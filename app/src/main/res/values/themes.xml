@@ -4,7 +4,10 @@
         <item name="colorPrimary">@color/purple_primary</item>
         <item name="colorPrimaryVariant">@color/purple_dark</item>
         <item name="colorSecondary">@color/pink_accent</item>
-
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorOnBackground">@color/color_text_primary</item>
+        <item name="colorOnSurface">@color/color_text_primary</item>
         <item name="materialButtonStyle">@style/Widget.PinMemory.Button</item>
     </style>
 

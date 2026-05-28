@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_bg">
+    android:background="?android:attr/colorBackground">
 
     <!-- Google Map -->
     <fragment
@@ -25,7 +25,6 @@
         android:paddingBottom="15dp"
         android:paddingTop="25dp">
 
-        <!-- Logo -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/allison_regular"
                 android:text="Pin"
-                android:textColor="@color/text_primary"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="40sp" />
 
             <TextView
@@ -50,7 +49,6 @@
                 android:textSize="40sp" />
         </LinearLayout>
 
-        <!-- Logout -->
         <ImageButton
             android:id="@+id/btnLogout"
             android:layout_width="42dp"
@@ -58,9 +56,24 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_logout"
-            app:tint="@color/text_primary"
+            app:tint="?android:attr/textColorPrimary"
             app:backgroundTint="@android:color/transparent"/>
     </LinearLayout>
+
+    <!-- Theme toggle button -->
+    <ImageButton
+        android:id="@+id/btnThemeToggle"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="100dp"
+        android:backgroundTint="?attr/colorSurface"
+        android:background="@drawable/bg_thumbnail_placeholder"
+        android:padding="8dp"
+        android:src="@drawable/ic_moon"
+        android:elevation="4dp"
+        app:tint="?android:attr/textColorPrimary"/>
 
     <!-- ADD MEMORY FAB -->
     <Button
@@ -91,7 +104,6 @@
         android:orientation="horizontal"
         android:paddingHorizontal="12dp">
 
-        <!-- Map -->
         <LinearLayout
             android:id="@+id/navMap"
             android:layout_width="0dp"
@@ -119,7 +131,6 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <!-- Memories -->
         <LinearLayout
             android:id="@+id/navMemories"
             android:layout_width="0dp"
@@ -135,14 +146,14 @@
                 android:layout_height="20dp"
                 android:layout_marginEnd="6dp"
                 android:src="@drawable/ic_list"
-                app:tint="@color/text_secondary" />
+                app:tint="?android:attr/textColorSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Memories"
-                android:textColor="@color/text_secondary"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textSize="14sp" />
         </LinearLayout>
 
