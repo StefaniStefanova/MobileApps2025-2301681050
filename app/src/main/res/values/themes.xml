@@ -28,4 +28,10 @@
         <item name="boxStrokeColor">@color/purple_primary</item>
         <item name="hintTextColor">@color/text_hint</item>
     </style>
+
+    <style name="RoundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
 </resources>

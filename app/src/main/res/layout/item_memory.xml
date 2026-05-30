@@ -16,13 +16,14 @@
         android:padding="12dp">
 
         <!-- Thumbnail -->
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivThumbnail"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:scaleType="centerCrop"
             android:background="@drawable/bg_thumbnail_placeholder"
-            android:layout_marginEnd="12dp"/>
+            android:layout_marginEnd="12dp"
+            app:shapeAppearanceOverlay="@style/RoundedImage"/>
 
         <!-- Info -->
         <LinearLayout
@@ -39,17 +40,32 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="?android:attr/textColorSecondary"
-                android:fontFamily="@font/poppins_semibold"
-                android:layout_marginBottom="4dp"/>
+                android:fontFamily="@font/poppins_semibold"/>
 
-            <TextView
-                android:id="@+id/tvItemLocation"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?android:attr/textColorSecondary"
-                android:fontFamily="@font/poppins_regular"
-                android:textSize="13sp"
-                android:layout_marginBottom="4dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="5dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_location"
+                    app:tint="@color/purple_dark"/>
+
+                <TextView
+                    android:id="@+id/tvItemLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="13sp"
+                    android:layout_marginTop="3dp"/>
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/tvItemDate"

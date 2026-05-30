@@ -32,17 +32,17 @@ class MemoryAdapter(
         fun bind(memory: MemoryEntity) {
             val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
             itemView.findViewById<TextView>(R.id.tvItemTitle).text = memory.title
-            itemView.findViewById<TextView>(R.id.tvItemLocation).text = "📍 ${memory.locationName}"
+            itemView.findViewById<TextView>(R.id.tvItemLocation).text = " ${memory.locationName}"
             itemView.findViewById<TextView>(R.id.tvItemDate).text = dateFormat.format(Date(memory.date))
 
-            val ivThumbnail = itemView.findViewById<ImageView>(R.id.ivThumbnail)
+            val ivThumbnail = itemView.findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.ivThumbnail)
             if (memory.imageUrl.isNotEmpty()) {
                 Glide.with(itemView.context)
                     .load(memory.imageUrl)
                     .centerCrop()
                     .into(ivThumbnail)
             } else {
-                ivThumbnail.setImageResource(R.drawable.ic_map)
+                ivThumbnail.setImageDrawable(null)
             }
 
             itemView.setOnClickListener { onItemClick(memory.id) }
